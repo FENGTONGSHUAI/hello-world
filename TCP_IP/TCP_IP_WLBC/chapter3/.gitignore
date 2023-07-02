@@ -1,0 +1,4 @@
+endian_conv
+inet_addr
+inet_aton
+inet_ntoa
