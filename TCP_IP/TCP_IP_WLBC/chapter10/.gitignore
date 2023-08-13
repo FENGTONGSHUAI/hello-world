@@ -1,0 +1,9 @@
+fork
+zombie
+wait
+waitpid
+signal
+sigaction
+remove_zombie
+echo_mpserv
+echo_mpclient
