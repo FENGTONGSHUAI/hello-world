@@ -1,0 +1,6 @@
+oob_send
+oob_recv
+peek_send
+peek_recv
+writev
+readv
