@@ -87,6 +87,7 @@ int main(int argc, char* argv[])
                     write(ep_events[i].data.fd, buf, str_len);
                     puts("return write");  // 不知道为什么客户端会出错, 后续学习中再发现吧
                                            // 可以参考这篇博客https://blog.csdn.net/Jiangtagong/article/details/116356621, 不过在wsl运行现象不太一样
+                                           // 后面可以实时在虚拟机运行, 看看现象是不是一样 20230828
                 }
             }
         }
