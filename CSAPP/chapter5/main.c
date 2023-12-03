@@ -28,5 +28,23 @@ int main(void) {
     elapsed = seconds + microseconds*1e-6;
     printf("combine2 time measured: %.6f seconds.\n", elapsed);
 
+    // combine3
+    gettimeofday(&begin, 0);
+    combine3(ptr, &result);
+    gettimeofday(&end, 0);
+    seconds = end.tv_sec - begin.tv_sec;
+    microseconds = end.tv_usec - begin.tv_usec;
+    elapsed = seconds + microseconds*1e-6;
+    printf("combine3 time measured: %.6f seconds.\n", elapsed);
+
+    // combine4
+    gettimeofday(&begin, 0);
+    combine4(ptr, &result);
+    gettimeofday(&end, 0);
+    seconds = end.tv_sec - begin.tv_sec;
+    microseconds = end.tv_usec - begin.tv_usec;
+    elapsed = seconds + microseconds*1e-6;
+    printf("combine4 time measured: %.6f seconds.\n", elapsed);
+
     return 0;
 }
