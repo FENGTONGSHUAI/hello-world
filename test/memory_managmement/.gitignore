@@ -2,3 +2,4 @@ test_malloc_memory
 test_oom
 test_virt
 test_virt2
+!images/test_virt
