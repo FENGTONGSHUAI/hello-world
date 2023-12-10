@@ -1,0 +1,4 @@
+test_malloc_memory
+test_oom
+test_virt
+test_virt2
