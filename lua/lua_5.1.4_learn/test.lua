@@ -20,3 +20,8 @@ for k, v in pairs(b) do
     print(type(k), k)
     print(type(v), v)
 end
+
+local a = "123"
+local b = 123
+
+print(string.format("a = %q, b = %q", a, b))
