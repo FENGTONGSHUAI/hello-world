@@ -234,5 +234,7 @@ function foo(n)
     if n > 0 then return foo(n - 1) end
 end
 
+-- 习题6.6后面可以研究一下
+
 
 
