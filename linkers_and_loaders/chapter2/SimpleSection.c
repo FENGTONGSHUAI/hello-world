@@ -33,10 +33,10 @@ size SimpleSection.o
 objdump -s -d SimpleSection.o
 objdump -x -s -d SimpleSection.o
 readelf -h SimpleSection.o
-readelf -S SimpleSection.o
+readelf -S SimpleSection.o  -- 查看段信息
 hexdump -C -n 82 -s 0x3a0 SimpleSection.o
 nm SimpleSection.o
-readelf -s SimpleSection.o
+readelf -s SimpleSection.o   -- 查看符号表
 readelf -a SimpleSection.o
 objdump -t SimpleSection.o
 
