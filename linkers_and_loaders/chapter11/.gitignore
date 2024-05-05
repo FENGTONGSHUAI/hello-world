@@ -6,3 +6,5 @@ file_op
 test.dat
 test_sum
 err_printf
+var_sum
+test_longjump
