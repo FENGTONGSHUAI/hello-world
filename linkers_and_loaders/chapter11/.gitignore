@@ -8,3 +8,5 @@ test_sum
 err_printf
 var_sum
 test_longjump
+test_ctor1
+test_ctor2
