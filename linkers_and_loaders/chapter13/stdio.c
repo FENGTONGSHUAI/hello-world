@@ -111,7 +111,7 @@ int fread(void * buffer, int size, int count, FILE* stream)
     return read((int) stream, buffer, size * count);
 }
 
-int fwrite(void * buffer, int size, int count, FILE* stream)
+int fwrite(const void * buffer, int size, int count, FILE* stream)
 {
     return write((int) stream, buffer, size * count);
 }
