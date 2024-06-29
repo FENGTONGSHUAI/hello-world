@@ -22,7 +22,7 @@ void free(void* ptr)
 {
     heap_header* header = (heap_header*) ADDR_ADD(ptr, -HEADER_SIZE);
     if(header->type != HEAP_BLOCK_USED)
-        return
+        return;
     
     header->type = HEAP_BLOCK_FREE;
     if(header->prev != NULL && header->prev->type == HEAP_BLOCK_FREE)
@@ -64,7 +64,7 @@ void *malloc(unsigned size)
                 header->size <= size + HEADER_SIZE * 2) 
         {
             header->type = HEAP_BLOCK_USED;
-            return ADDR_ADD(header, HEADER_SIZE)
+            return ADDR_ADD(header, HEADER_SIZE);
         }
 
         if(header->size > size + HEADER_SIZE * 2) 
@@ -78,7 +78,7 @@ void *malloc(unsigned size)
             header->next = next;
             header->size = size + HEADER_SIZE;
             header->type = HEAP_BLOCK_USED;
-            return ADDR_ADD(header, HEADER_SIZE)
+            return ADDR_ADD(header, HEADER_SIZE);
         }
         header = header->next;
     }

@@ -35,7 +35,7 @@ typedef int  FILE;
 #endif
 
 int mini_crt_io_init();
-FIFE *fopen(const char* filename, const char* mode);
+FILE *fopen(const char* filename, const char* mode);
 int fread(void * buffer, int size, int count, FILE* stream);
 int fwrite(const void * buffer, int size, int count, FILE* stream);
 int fclose(FILE* fp);

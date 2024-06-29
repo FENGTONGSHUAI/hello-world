@@ -17,12 +17,12 @@ static int open(const char* pathname, int flags, int mode)
         "movl %2, %%ecx     \n\t"
         "movl %3, %%edx     \n\t"
         "int $0x80          \n\t"
-        "movl %%eax, %0     \n\t"):
-        "=m"(fd):"m"(pathname),"m"(flags),"m"(mode);
+        "movl %%eax, %0     \n\t":
+        "=m"(fd):"m"(pathname),"m"(flags),"m"(mode));
     return fd;
 }
 
-static int read(int fd, void* buffer, unsigend size)
+static int read(int fd, void* buffer, unsigned size)
 {
     int ret = 0;
     asm("movl $3, %%eax     \n\t"
@@ -72,7 +72,7 @@ static int seek(int fd, int offset, int mode)
     return ret;
 }
 
-FIFE *fopen(const char* filename, const char* mode)
+FILE *fopen(const char* filename, const char* mode)
 {
     int fd = -1;
     int flags = 0;
@@ -103,7 +103,7 @@ FIFE *fopen(const char* filename, const char* mode)
     }
 
     fd = open(filename, flags, access);
-    reutrn (FILE *) fd;
+    return (FILE *) fd;
 }
 
 int fread(void * buffer, int size, int count, FILE* stream)
