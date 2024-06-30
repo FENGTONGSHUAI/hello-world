@@ -65,4 +65,5 @@ int atexit(atexit_func_t func);
 /*
 gcc -c -ggdb -fno-builtin -nostdlib -fno-stack-protector entry.c malloc.c stdio.c string.c printf.c
 ar -rs minicrt.a malloc.o printf.o stdio.o string.o
+可参考: https://github.com/MRNIU/libcxxrt
 */
