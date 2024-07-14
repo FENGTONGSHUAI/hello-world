@@ -10,9 +10,13 @@ extern "C" {
 #define NULL (0)
 #endif
 
+typedef long long int64_t;
+
+typedef unsigned long long uint64_t;
+
 void free(void *ptr);
 void *malloc(unsigned size);
-static int brk(void* end_data_segment);
+static void *brk(void* end_data_segment);
 int mini_crt_heap_init();
 
 // 字符串

@@ -104,17 +104,16 @@ static int brk(void* end_data_segment)
     return ret;  
 }
 #elif defined(__x86_64__)
-static int brk(void* end_data_segment) {  
-    int ret;  
+static void *brk(void* end_data_segment) {  
+    void *ret;  
     // x86_64 架构下，brk 的系统调用号通常在 sys/syscall.h 中定义为 SYS_brk  
     __asm__ __volatile__ (  
         "movq %1, %%rdi  \n\t" // 将 end_data_segment 的地址放入 %rdi 寄存器  
-        "movq $%2, %%rax \n\t" // 将系统调用号 SYS_brk 放入 %rax 寄存器  
+        "movq $12, %%rax \n\t" // 将系统调用号 SYS_brk 放入 %rax 寄存器  
         "syscall         \n\t" // 执行系统调用  
         "movq %%rax, %0  \n\t" // 将系统调用的返回值（即错误码）放入 ret 变量  
         : "=r"(ret)            // 输出部分：将 %rax 的值赋给 ret  
-        : "r"(end_data_segment), // 输入部分：将 end_data_segment 的值放入 %rdi  
-          "i"(12)          // 立即数输入：将系统调用号作为立即数放入  
+        : "r"(end_data_segment) // 输入部分：将 end_data_segment 的值放入 %rdi  
     );  
     return ret;  
 } 

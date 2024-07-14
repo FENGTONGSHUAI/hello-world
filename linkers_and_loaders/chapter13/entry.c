@@ -86,13 +86,6 @@ void exit(int exitCode) {
         "hlt            \n\t"::"m"(exitCode)
         );
 #elif defined(__x86_64__)
-    __asm__ __volatile__ (  
-        "movq %0, %%rdi  \n\t" // 将退出码放入 %rdi  
-        "movq $%1, %%rax \n\t" // 将系统调用号 SYS_exit 放入 %rax  
-        "syscall         \n\t" // 执行系统调用  
-        :  
-        : "r"(exitCode), "i"(60) // 输入：exitCode 到 %rdi, SYS_exit 到 %rax  
-        : "rdi", "rax", "memory", "cc" // 告诉编译器这些寄存器被修改了，以及可能有内存访问和条件码改变  
-    );  
+    __asm__ __volatile__("syscall" : : "a"(60), "D"(exitCode));
 #endif
 }
