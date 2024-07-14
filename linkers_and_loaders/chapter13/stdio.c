@@ -9,6 +9,8 @@ int mini_crt_io_init()
 #ifdef WIN32
 // win32暂不实现
 #else
+
+#if defined(__i386__)
 static int open(const char* pathname, int flags, int mode)
 {
     int fd = 0;
@@ -71,6 +73,87 @@ static int seek(int fd, int offset, int mode)
         "=m"(ret):"m"(fd),"m"(offset),"m"(mode));
     return ret;
 }
+
+#elif defined(__x86_64__)
+// 以下由问心一言实现, 有修改
+static int open(const char* pathname, int flags, int mode)  
+{  
+    int fd;  
+    __asm__  volatile (  
+        "movq %1, %%rdi  \n\t" // 文件名 pathname 放入 %rdi  
+        "movq %2, %%rsi  \n\t" // 标志 flags 放入 %rsi  
+        "movq %3, %%rdx  \n\t" // 模式 mode 放入 %rdx  
+        "movq $%4, %%rax \n\t" // 系统调用号 SYS_open 放入 %rax  
+        "syscall         \n\t" // 执行系统调用  
+        "movq %%rax, %0  \n\t" // 将返回值（文件描述符）放入 fd  
+        : "=r"(fd)             // 输出  
+        : "r"(pathname), "r"(flags), "r"(mode), "i"(2) // 输入  
+    );  
+    return fd;  
+}  
+  
+static int read(int fd, void* buffer, int size)  
+{  
+    int ret;  
+    asm volatile (  
+        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
+        "movq %2, %%rsi  \n\t" // 缓冲区 buffer 地址放入 %rsi  
+        "movq %3, %%rdx  \n\t" // 大小 size 放入 %rdx  
+        "movq $%4, %%rax \n\t" // 系统调用号 SYS_read 放入 %rax  
+        "syscall         \n\t" // 执行系统调用  
+        "movq %%rax, %0  \n\t" // 将返回值（读取的字节数或错误码）放入 ret  
+        : "=r"(ret)            // 输出  
+        : "r"(fd), "r"(buffer), "r"(size), "i"(0) // 输入  
+    );  
+    return ret;  
+}  
+  
+static int write(int fd, const void* buffer, int size)  
+{  
+    int ret;  
+    asm volatile (  
+        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
+        "movq %2, %%rsi  \n\t" // 缓冲区 buffer 地址放入 %rsi  
+        "movq %3, %%rdx  \n\t" // 大小 size 放入 %rdx  
+        "movq $%4, %%rax \n\t" // 系统调用号 SYS_write 放入 %rax  
+        "syscall         \n\t" // 执行系统调用  
+        "movq %%rax, %0  \n\t" // 将返回值（写入的字节数或错误码）放入 ret  
+        : "=r"(ret)            // 输出  
+        : "r"(fd), "r"(buffer), "r"(size), "i"(1) // 输入  
+    );  
+    return ret;  
+}  
+  
+static int close(int fd)  
+{  
+    int ret;  
+    asm volatile (  
+        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
+        "movq $%2, %%rax \n\t" // 系统调用号 SYS_close 放入 %rax  
+        "syscall         \n\t" // 执行系统调用  
+        "movq %%rax, %0  \n\t" // 将返回值（错误码）放入 ret  
+        : "=r"(ret)            // 输出  
+        : "r"(fd), "i"(3) // 输入  
+    );  
+    return ret;  
+}
+  
+static int seek(int fd, int offset, int whence)  
+{  
+    int ret = 0;  
+    asm volatile (  
+        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
+        "movq %2, %%rsi  \n\t" // 偏移量 offset 放入 %rsi（注意这里使用mov因为offset是int类型）  
+        "movq %3, %%edx  \n\t" // whence（虽然是int，但用%edx传递）  
+        "movq $%4, %%rax \n\t" // 系统调用号 SYS_lseek 放入 %rax  
+        "syscall         \n\t" // 执行系统调用  
+        "movq %%rax, %0  \n\t" // 将返回值（新的偏移量或错误码）放入 ret  
+        : "=r"(ret)            // 输出  
+        : "r"(fd), "r"(offset), "r"(whence), "i"(8) // 输入  
+    );  
+    return ret;  
+}
+#endif
 
 FILE *fopen(const char* filename, const char* mode)
 {

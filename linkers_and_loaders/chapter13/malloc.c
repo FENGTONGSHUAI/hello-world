@@ -88,8 +88,10 @@ void *malloc(unsigned size)
 
 #ifndef WIN32
 // Linux brk system call
+#if defined(__i386__)
 static int brk(void* end_data_segment)
 {
+
     int ret = 0;
     // brk system call number: 45
     // in /usr/include/asm-i386/unistd.h:
@@ -99,7 +101,24 @@ static int brk(void* end_data_segment)
         "int $0x80          \n\t"
         "movl %%eax, %0     \n\t"
         : "=r"(ret): "m"(end_data_segment));
+    return ret;  
 }
+#elif defined(__x86_64__)
+static int brk(void* end_data_segment) {  
+    int ret;  
+    // x86_64 架构下，brk 的系统调用号通常在 sys/syscall.h 中定义为 SYS_brk  
+    asm volatile (  
+        "movq %1, %%rdi  \n\t" // 将 end_data_segment 的地址放入 %rdi 寄存器  
+        "movq $%2, %%rax \n\t" // 将系统调用号 SYS_brk 放入 %rax 寄存器  
+        "syscall         \n\t" // 执行系统调用  
+        "movq %%rax, %0  \n\t" // 将系统调用的返回值（即错误码）放入 ret 变量  
+        : "=r"(ret)            // 输出部分：将 %rax 的值赋给 ret  
+        : "r"(end_data_segment), // 输入部分：将 end_data_segment 的值放入 %rdi  
+          "i"(12)          // 立即数输入：将系统调用号作为立即数放入  
+    );  
+    return ret;  
+} 
+#endif
 #endif
 
 #ifdef WIN32
