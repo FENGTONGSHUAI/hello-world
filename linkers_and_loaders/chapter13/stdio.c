@@ -79,7 +79,7 @@ static int seek(int fd, int offset, int mode)
 static int open(const char* pathname, int flags, int mode)  
 {  
     int fd;  
-    __asm__  volatile (  
+    __asm__  __volatile__ (  
         "movq %1, %%rdi  \n\t" // 文件名 pathname 放入 %rdi  
         "movq %2, %%rsi  \n\t" // 标志 flags 放入 %rsi  
         "movq %3, %%rdx  \n\t" // 模式 mode 放入 %rdx  
@@ -95,7 +95,7 @@ static int open(const char* pathname, int flags, int mode)
 static int read(int fd, void* buffer, int size)  
 {  
     int ret;  
-    asm volatile (  
+    __asm__ __volatile__ (  
         "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
         "movq %2, %%rsi  \n\t" // 缓冲区 buffer 地址放入 %rsi  
         "movq %3, %%rdx  \n\t" // 大小 size 放入 %rdx  
@@ -111,7 +111,7 @@ static int read(int fd, void* buffer, int size)
 static int write(int fd, const void* buffer, int size)  
 {  
     int ret;  
-    asm volatile (  
+    __asm__ __volatile__ (  
         "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
         "movq %2, %%rsi  \n\t" // 缓冲区 buffer 地址放入 %rsi  
         "movq %3, %%rdx  \n\t" // 大小 size 放入 %rdx  
@@ -127,7 +127,7 @@ static int write(int fd, const void* buffer, int size)
 static int close(int fd)  
 {  
     int ret;  
-    asm volatile (  
+    __asm__ __volatile__ (  
         "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
         "movq $%2, %%rax \n\t" // 系统调用号 SYS_close 放入 %rax  
         "syscall         \n\t" // 执行系统调用  
@@ -141,7 +141,7 @@ static int close(int fd)
 static int seek(int fd, int offset, int whence)  
 {  
     int ret = 0;  
-    asm volatile (  
+    __asm__ __volatile__ (  
         "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
         "movq %2, %%rsi  \n\t" // 偏移量 offset 放入 %rsi（注意这里使用mov因为offset是int类型）  
         "movq %3, %%edx  \n\t" // whence（虽然是int，但用%edx传递）  

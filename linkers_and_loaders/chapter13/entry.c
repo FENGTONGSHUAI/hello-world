@@ -86,7 +86,7 @@ void exit(int exitCode) {
         "hlt            \n\t"::"m"(exitCode)
         );
 #elif defined(__x86_64__)
-    asm volatile (  
+    __asm__ __volatile__ (  
         "movq %0, %%rdi  \n\t" // 将退出码放入 %rdi  
         "movq $%1, %%rax \n\t" // 将系统调用号 SYS_exit 放入 %rax  
         "syscall         \n\t" // 执行系统调用  

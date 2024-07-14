@@ -107,7 +107,7 @@ static int brk(void* end_data_segment)
 static int brk(void* end_data_segment) {  
     int ret;  
     // x86_64 架构下，brk 的系统调用号通常在 sys/syscall.h 中定义为 SYS_brk  
-    asm volatile (  
+    __asm__ __volatile__ (  
         "movq %1, %%rdi  \n\t" // 将 end_data_segment 的地址放入 %rdi 寄存器  
         "movq $%2, %%rax \n\t" // 将系统调用号 SYS_brk 放入 %rax 寄存器  
         "syscall         \n\t" // 执行系统调用  
