@@ -76,81 +76,48 @@ static int seek(int fd, int offset, int mode)
 
 #elif defined(__x86_64__)
 // 以下由问心一言实现, 有修改
-static int open(const char* pathname, int flags, int mode)  
+static int64_t open(const char* pathname, int flags, int64_t mode)  
 {  
     int fd;  
-    __asm__  __volatile__ (  
-        "movq %1, %%rdi  \n\t" // 文件名 pathname 放入 %rdi  
-        "movq %2, %%rsi  \n\t" // 标志 flags 放入 %rsi  
-        "movq %3, %%rdx  \n\t" // 模式 mode 放入 %rdx  
-        "movq $%4, %%rax \n\t" // 系统调用号 SYS_open 放入 %rax  
-        "syscall         \n\t" // 执行系统调用  
-        "movq %%rax, %0  \n\t" // 将返回值（文件描述符）放入 fd  
-        : "=r"(fd)             // 输出  
-        : "r"(pathname), "r"(flags), "r"(mode), "i"(2) // 输入  
-    );  
+    __asm__ __volatile__("syscall"
+                       : "=a"(fd)
+                       : "a"(2), "D"(pathname), "S"(flags),
+                         "d"(mode)); 
     return fd;  
 }  
   
-static int read(int fd, void* buffer, int size)  
+static int64_t read(int fd, void* buffer, uint64_t size)  
 {  
-    int ret;  
-    __asm__ __volatile__ (  
-        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
-        "movq %2, %%rsi  \n\t" // 缓冲区 buffer 地址放入 %rsi  
-        "movq %3, %%rdx  \n\t" // 大小 size 放入 %rdx  
-        "movq $%4, %%rax \n\t" // 系统调用号 SYS_read 放入 %rax  
-        "syscall         \n\t" // 执行系统调用  
-        "movq %%rax, %0  \n\t" // 将返回值（读取的字节数或错误码）放入 ret  
-        : "=r"(ret)            // 输出  
-        : "r"(fd), "r"(buffer), "r"(size), "i"(0) // 输入  
-    );  
+    int64_t ret;  
+    __asm__ __volatile__("syscall"
+                       : "=a"(ret)
+                       : "a"(0), "D"(fd), "S"(buffer), "d"(size)); 
     return ret;  
 }  
   
-static int write(int fd, const void* buffer, int size)  
+static int64_t write(int fd, const void* buffer, uint64_t size)  
 {  
-    int ret;  
-    __asm__ __volatile__ (  
-        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
-        "movq %2, %%rsi  \n\t" // 缓冲区 buffer 地址放入 %rsi  
-        "movq %3, %%rdx  \n\t" // 大小 size 放入 %rdx  
-        "movq $%4, %%rax \n\t" // 系统调用号 SYS_write 放入 %rax  
-        "syscall         \n\t" // 执行系统调用  
-        "movq %%rax, %0  \n\t" // 将返回值（写入的字节数或错误码）放入 ret  
-        : "=r"(ret)            // 输出  
-        : "r"(fd), "r"(buffer), "r"(size), "i"(1) // 输入  
-    );  
+    int64_t ret;  
+    __asm__ __volatile__("syscall"
+                       : "=a"(ret)
+                       : "a"(1), "D"(fd), "S"(buffer), "d"(size));
     return ret;  
 }  
   
-static int close(int fd)  
+static int64_t close(int fd)  
 {  
-    int ret;  
-    __asm__ __volatile__ (  
-        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
-        "movq $%2, %%rax \n\t" // 系统调用号 SYS_close 放入 %rax  
-        "syscall         \n\t" // 执行系统调用  
-        "movq %%rax, %0  \n\t" // 将返回值（错误码）放入 ret  
-        : "=r"(ret)            // 输出  
-        : "r"(fd), "i"(3) // 输入  
-    );  
+    int64_t ret;  
+    __asm__ __volatile__("syscall" : "=a"(ret) : "a"(3), "D"(fd));
+
     return ret;  
 }
   
-static int seek(int fd, int offset, int whence)  
+static int64_t seek(int fd, uint64_t offset, int mode)  
 {  
-    int ret = 0;  
-    __asm__ __volatile__ (  
-        "movq %1, %%rdi  \n\t" // 文件描述符 fd 放入 %rdi  
-        "movq %2, %%rsi  \n\t" // 偏移量 offset 放入 %rsi（注意这里使用mov因为offset是int类型）  
-        "movq %3, %%edx  \n\t" // whence（虽然是int，但用%edx传递）  
-        "movq $%4, %%rax \n\t" // 系统调用号 SYS_lseek 放入 %rax  
-        "syscall         \n\t" // 执行系统调用  
-        "movq %%rax, %0  \n\t" // 将返回值（新的偏移量或错误码）放入 ret  
-        : "=r"(ret)            // 输出  
-        : "r"(fd), "r"(offset), "r"(whence), "i"(8) // 输入  
-    );  
+    int64_t ret = 0;  
+    __asm__ __volatile__("syscall"
+                       : "=a"(ret)
+                       : "a"(8), "D"(fd), "S"(offset), "d"(mode));
     return ret;  
 }
 #endif

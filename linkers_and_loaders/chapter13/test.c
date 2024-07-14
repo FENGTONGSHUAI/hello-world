@@ -6,7 +6,7 @@ int main(int argc, char* argv[])
     FILE* fp;
     char** v = malloc(argc * sizeof(char *));
     for(i = 0; i < argc; ++i) {
-        v[i] = malloc(strlen(argv[i]) + 1);
+        v[i] = (char *)malloc(strlen(argv[i]) + 1);
         strcpy(v[i], argv[i]);
     }
 
