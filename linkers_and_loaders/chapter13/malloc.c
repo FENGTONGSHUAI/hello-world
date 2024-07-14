@@ -111,7 +111,7 @@ static void *brk(void* end_data_segment) {
         "movq %1, %%rdi  \n\t" // 将 end_data_segment 的地址放入 %rdi 寄存器  
         "movq $12, %%rax \n\t" // 将系统调用号 SYS_brk 放入 %rax 寄存器  
         "syscall         \n\t" // 执行系统调用  
-        "movq %%rax, %0  \n\t" // 将系统调用的返回值（即错误码）放入 ret 变量  
+        "movq %%rax, %0  \n\t" 
         : "=r"(ret)            // 输出部分：将 %rax 的值赋给 ret  
         : "r"(end_data_segment) // 输入部分：将 end_data_segment 的值放入 %rdi  
     );  
@@ -139,11 +139,12 @@ int mini_crt_heap_init()
 #else
     base = (void *) brk(0);
     void* end = ADDR_ADD(base, heap_size);
-    end = (void *)brk(end);
-    if(!end) 
-    {
-        return 0;
-    }
+    void* result = (void *)brk(end);
+    if (result == (void *)-1 || result != end) {  
+        // 如果brk_wrapper返回-1或结果与预期不符，则扩展失败  
+        printf("brk failed");  
+        return -1;  
+    }  
 #endif
 
     header = (heap_header*) base;
