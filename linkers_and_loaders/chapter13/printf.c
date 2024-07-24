@@ -1,4 +1,5 @@
 #include "minicrt.h"
+#include "stdarg.h"
 
 int fputc(int c, FILE *stream)
 {
@@ -19,10 +20,11 @@ int fputs(const char *str, FILE *stream)
     }
 }
 
-#define va_list char *
-#define va_start(ap, arg) (ap=(va_list)&arg + sizeof(arg))
-#define va_arg(ap, t) (*(t*)((ap+=sizeof(t)) - sizeof(t)))
-#define va_end(ap) (ap=(va_list)0)
+// 尝试过使用下面的逻辑, 但是一直不能通过, 估计是并不适用了, 还是引入了stdarg.h
+// #define va_list char *
+// #define va_start(ap, arg) (ap=(va_list)&arg + sizeof(arg))
+// #define va_arg(ap, t) (*(t*)((ap+=sizeof(t)) - sizeof(t)))
+// #define va_end(ap) (ap=(va_list)0)
 
 int vfprintf(FILE *stream, const char * format, va_list arglist)
 {
