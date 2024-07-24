@@ -20,7 +20,8 @@ int fputs(const char *str, FILE *stream)
     }
 }
 
-// 尝试过使用下面的逻辑, 但是一直不能通过, 估计是并不适用了, 还是引入了stdarg.h
+// 尝试过使用下面的逻辑, 但是一直不能通过, 估计是并不适用了, 参考 https://github.com/MRNIU/libcxxrt 还是引入了stdarg.h
+// 这样不太能满足没有外部依赖的条件, 但是以学习为目的, 后续可以研究一下现在的实现。
 // #define va_list char *
 // #define va_start(ap, arg) (ap=(va_list)&arg + sizeof(arg))
 // #define va_arg(ap, t) (*(t*)((ap+=sizeof(t)) - sizeof(t)))
