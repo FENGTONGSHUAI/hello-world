@@ -48,7 +48,6 @@ void free(void* ptr)
 
 void *malloc(unsigned size)
 {
-    printf("malloc %d\n", size);
     heap_header *header;
     if(size == 0) return NULL;
 
