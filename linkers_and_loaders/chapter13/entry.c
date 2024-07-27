@@ -69,6 +69,8 @@ void mini_crt_entry(void)
     if(!mini_crt_io_init()) {
         crt_fatal_error("IO initialize failed");
     }
+
+    do_global_ctors();
     
     ret = main(argc, argv);
 
@@ -76,7 +78,7 @@ void mini_crt_entry(void)
 }
 
 void exit(int exitCode) {
-    // mini_crt_call_exit_routine();
+    mini_crt_call_exit_routine();
 #ifdef WIN32
     ExitProcess(exitCode);
 #elif defined(__i386__)
